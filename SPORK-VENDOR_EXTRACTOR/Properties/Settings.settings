@@ -1,0 +1,33 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SPORK_VENDOR_EXTRACTOR.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="HanaServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.1.72:30015</Value>
+    </Setting>
+    <Setting Name="HanaDB" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SIDCDB</Value>
+    </Setting>
+    <Setting Name="HanaUser" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SYSTEM</Value>
+    </Setting>
+    <Setting Name="HanaPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1q2w#E$R</Value>
+    </Setting>
+    <Setting Name="MySQLServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">localhost</Value>
+    </Setting>
+    <Setting Name="MySQLDB" Type="System.String" Scope="User">
+      <Value Profile="(Default)">spork</Value>
+    </Setting>
+    <Setting Name="MySQLUser" Type="System.String" Scope="User">
+      <Value Profile="(Default)">root</Value>
+    </Setting>
+    <Setting Name="MySQLPassword" Type="System.String" Scope="User">
+      <Value Profile="(Default)">supervisor</Value>
+    </Setting>
+    <Setting Name="RecordCountLimit" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1000</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
