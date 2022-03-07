@@ -24,6 +24,7 @@ namespace SPORK_EXTRACTOR
         public string UomCode { get; set; }
         public string Barcode { get; set; }
         public decimal Conversion { get; set; }
+        public bool IsBaseUOM { get; set; }
     }
 
     public class SporkItemMaster : HanaItemMaster

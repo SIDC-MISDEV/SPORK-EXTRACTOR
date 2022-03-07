@@ -230,12 +230,13 @@ namespace SPORK_EXTRACTOR
 
                 for (int i = 0; i < data.Count; i++)
                 {
-                    param.Add($"(@UgpEntry{i}, @ItemCode{i}, @UomCode{i}, @Barcode{i}, @Conversion{i})");
+                    param.Add($"(@UgpEntry{i}, @ItemCode{i}, @UomCode{i}, @Barcode{i}, @Conversion{i}, @baseuom{i})");
                     forInsert.Add($"@UgpEntry{i}", data[i].UgpEntry);
                     forInsert.Add($"@ItemCode{i}", data[i].ItemCode);
                     forInsert.Add($"@UomCode{i}", data[i].UomCode);
                     forInsert.Add($"@Barcode{i}", data[i].Barcode);
                     forInsert.Add($"@Conversion{i}", data[i].Conversion);
+                    forInsert.Add($"@baseuom{i}", data[i].IsBaseUOM);
                 }
 
                 sb.Append($"{SQLQuery.InsertItemUom} {string.Join(",", param)}");
@@ -329,12 +330,14 @@ namespace SPORK_EXTRACTOR
                         h.""UgpCode"" as ID_STOCK,
 			            b.""BcdCode"" as BARCODE,
 			            u.""UomCode"" as UNIT,
-			            d.""BaseQty"" as CONVERSION
-			        FROM {hanaDB}.OUGP h inner join {hanaDB}.UGP1 d  on h.""UgpEntry"" = d.""UgpEntry""
+			            d.""BaseQty"" as CONVERSION,
+                        case c.""UomCode"" when e.""UomCode"" then 1 else 0 end as BASE_UOM
+                    FROM {hanaDB}.OUGP h inner join {hanaDB}.UGP1 d  on h.""UgpEntry"" = d.""UgpEntry""
 			        inner join {hanaDB}.OUOM u  on u.""UomEntry"" = d.""UomEntry""
 			        inner join {hanaDB}.OITM i on i.""ItemCode"" = h.""UgpCode""
 			        left join {hanaDB}.OBCD b on b.""ItemCode"" = h.""UgpCode"" and b.""UomEntry"" = d.""UomEntry""
-			        where 
+                    left join {hanaDB}.OUOM e on e.""UomEntry""= a.""BaseUom""
+                    where 
 			        (i.""InvntItem"" = 'Y' and i.""SellItem"" = 'Y')
                     AND i.""ItmsGrpCod"" not in (100,104,105,106,107,129,130,131,132,137)
 			        and u.""UomEntry"" not in (31) ORDER BY i.""ItemCode"" ASC {limitData};");
@@ -347,11 +350,13 @@ namespace SPORK_EXTRACTOR
 			            h.""UgpCode"" as ID_STOCK,
 			            b.""BcdCode"" as BARCODE,
 			            u.""UomCode"" as UNIT,
-			            d.""BaseQty"" as CONVERSION
+			            d.""BaseQty"" as CONVERSION,
+                        case c.""UomCode"" when e.""UomCode"" then 1 else 0 end as BASE_UOM
 			        FROM {hanaDB}.OUGP h inner join {hanaDB}.UGP1 d  on h.""UgpEntry"" = d.""UgpEntry""
 			        inner join {hanaDB}.OUOM u  on u.""UomEntry"" = d.""UomEntry""
 			        inner join {hanaDB}.OITM i on i.""ItemCode"" = h.""UgpCode""
 			        left join {hanaDB}.OBCD b on b.""ItemCode"" = h.""UgpCode"" and b.""UomEntry"" = d.""UomEntry""
+                    left join {hanaDB}.OUOM e on e.""UomEntry""= a.""BaseUom""
 			        where i.""ItemCode"" NOT IN ({values})
 			        AND (i.""InvntItem"" = 'Y' and i.""SellItem"" = 'Y')
                     AND i.""ItmsGrpCod"" not in (100,104,105,106,107,129,130,131,132,137)
@@ -376,7 +381,7 @@ namespace SPORK_EXTRACTOR
         }
 
         public static StringBuilder InsertItemMaster = new StringBuilder(@"INSERT INTO OITM (ItemCode, Prefix, ItemName, Cancelled, Category, SubCategory, SubSubCategory) VALUES ");
-        public static StringBuilder InsertItemUom = new StringBuilder(@"INSERT INTO oitm_ougp_ugp1_ouom_obcd (UgpEntry, ItemCode, UomCode, Barcode, Conversion) VALUES ");
+        public static StringBuilder InsertItemUom = new StringBuilder(@"INSERT INTO oitm_ougp_ugp1_ouom_obcd (UgpEntry, ItemCode, UomCode, Barcode, Conversion, IsBaseUOM) VALUES ");
 
     }
 
