@@ -105,7 +105,8 @@ namespace SPORK_EXTRACTOR
                                 ItemCode = dr["ID_STOCK"].ToString(),
                                 UomCode = dr["UNIT"].ToString(),
                                 Barcode = dr["BARCODE"].ToString(),
-                                Conversion = Convert.ToDecimal(dr["CONVERSION"])
+                                Conversion = Convert.ToDecimal(dr["CONVERSION"]),
+                                IsBaseUOM = Convert.ToBoolean(dr["BASE_UOM"])
                             });
                         }
 
@@ -336,7 +337,7 @@ namespace SPORK_EXTRACTOR
 			        inner join {hanaDB}.OUOM u  on u.""UomEntry"" = d.""UomEntry""
 			        inner join {hanaDB}.OITM i on i.""ItemCode"" = h.""UgpCode""
 			        left join {hanaDB}.OBCD b on b.""ItemCode"" = h.""UgpCode"" and b.""UomEntry"" = d.""UomEntry""
-                    left join {hanaDB}.OUOM e on e.""UomEntry""= a.""BaseUom""
+                    left join {hanaDB}.OUOM e on e.""UomEntry""= h.""BaseUom""
                     where 
 			        (i.""InvntItem"" = 'Y' and i.""SellItem"" = 'Y')
                     AND i.""ItmsGrpCod"" not in (100,104,105,106,107,129,130,131,132,137)
@@ -356,7 +357,7 @@ namespace SPORK_EXTRACTOR
 			        inner join {hanaDB}.OUOM u  on u.""UomEntry"" = d.""UomEntry""
 			        inner join {hanaDB}.OITM i on i.""ItemCode"" = h.""UgpCode""
 			        left join {hanaDB}.OBCD b on b.""ItemCode"" = h.""UgpCode"" and b.""UomEntry"" = d.""UomEntry""
-                    left join {hanaDB}.OUOM e on e.""UomEntry""= a.""BaseUom""
+                    left join {hanaDB}.OUOM e on e.""UomEntry""= h.""BaseUom""
 			        where i.""ItemCode"" NOT IN ({values})
 			        AND (i.""InvntItem"" = 'Y' and i.""SellItem"" = 'Y')
                     AND i.""ItmsGrpCod"" not in (100,104,105,106,107,129,130,131,132,137)
