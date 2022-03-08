@@ -131,7 +131,8 @@ namespace SPORK_EXTRACTOR
                             ItemCode = item.ItemCode,
                             Barcode = item.Barcode,
                             Conversion = item.Conversion,
-                            UomCode = item.UomCode
+                            UomCode = item.UomCode,
+                            IsBaseUOM = item.IsBaseUOM
                         });
                     }
 

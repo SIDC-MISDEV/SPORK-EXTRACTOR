@@ -326,42 +326,83 @@ namespace SPORK_EXTRACTOR
                     break;
                 case DataSource.HanaUom:
 
-                    sb.Append($@"SELECT
-                        h.""UgpEntry"",
-                        h.""UgpCode"" as ID_STOCK,
-			            b.""BcdCode"" as BARCODE,
-			            u.""UomCode"" as UNIT,
-			            d.""BaseQty"" as CONVERSION,
+                    //         sb.Append($@"SELECT
+                    //             h.""UgpEntry"",
+                    //             h.""UgpCode"" as ID_STOCK,
+                    //    b.""BcdCode"" as BARCODE,
+                    //    u.""UomCode"" as UNIT,
+                    //    d.""BaseQty"" as CONVERSION,
+                    //             case e.""UomCode"" when e.""UomCode"" then 1 else 0 end as BASE_UOM
+                    //         FROM {hanaDB}.OUGP h inner join {hanaDB}.UGP1 d  on h.""UgpEntry"" = d.""UgpEntry""
+                    //inner join {hanaDB}.OUOM u  on u.""UomEntry"" = d.""UomEntry""
+                    //inner join {hanaDB}.OITM i on i.""ItemCode"" = h.""UgpCode""
+                    //left join {hanaDB}.OBCD b on b.""ItemCode"" = h.""UgpCode"" and b.""UomEntry"" = d.""UomEntry""
+                    //         left join {hanaDB}.OUOM e on e.""UomEntry""= h.""BaseUom""
+                    //         where 
+                    //(i.""InvntItem"" = 'Y' and i.""SellItem"" = 'Y')
+                    //         AND i.""ItmsGrpCod"" not in (100,104,105,106,107,129,130,131,132,137)
+                    //and u.""UomEntry"" not in (31) ORDER BY i.""ItemCode"" ASC {limitData};");
+
+                    sb.Append($@"select 
+	                    a.""UgpEntry"",
+
+                        a.""UgpCode"" as ID_STOCK,
+                        c.""UomCode"" as UNIT,
+                        b.""BaseQty"" as CONVERSION,
+                        d.""BcdCode"" as BARCODE,
+
                         case c.""UomCode"" when e.""UomCode"" then 1 else 0 end as BASE_UOM
-                    FROM {hanaDB}.OUGP h inner join {hanaDB}.UGP1 d  on h.""UgpEntry"" = d.""UgpEntry""
-			        inner join {hanaDB}.OUOM u  on u.""UomEntry"" = d.""UomEntry""
-			        inner join {hanaDB}.OITM i on i.""ItemCode"" = h.""UgpCode""
-			        left join {hanaDB}.OBCD b on b.""ItemCode"" = h.""UgpCode"" and b.""UomEntry"" = d.""UomEntry""
-                    left join {hanaDB}.OUOM e on e.""UomEntry""= h.""BaseUom""
-                    where 
-			        (i.""InvntItem"" = 'Y' and i.""SellItem"" = 'Y')
-                    AND i.""ItmsGrpCod"" not in (100,104,105,106,107,129,130,131,132,137)
-			        and u.""UomEntry"" not in (31) ORDER BY i.""ItemCode"" ASC {limitData};");
+                    from {hanaDB}.OUGP a
+                    inner
+                    join {hanaDB}.UGP1 b on a.""UgpEntry"" = b.""UgpEntry""
+                    inner join {hanaDB}.OUOM c on b.""UomEntry"" = c.""UomEntry""
+                    inner join {hanaDB}.OITM f on f.""ItemCode"" = a.""UgpCode""
+                    left join {hanaDB}.OBCD d on a.""UgpCode"" = d.""ItemCode"" and b.""UomEntry"" = d.""UomEntry""
+                    left join {hanaDB}.OUOM e on e.""UomEntry"" = a.""BaseUom""
+                    where (f.""InvntItem"" = 'Y' and f.""SellItem"" = 'Y')
+                    AND f.""ItmsGrpCod"" not in (100,104,105,106,107,129,130,131,132,137)
+                    and c.""UomEntry"" not in (31) ORDER BY f.""ItemCode"" ASC {limitData}; ");
+
+                    sb.Append($@"");
 
                     break;
                 case DataSource.HanaUomItemCode:
 
-                    sb.Append($@"SELECT
-                        h.""UgpEntry"",
-			            h.""UgpCode"" as ID_STOCK,
-			            b.""BcdCode"" as BARCODE,
-			            u.""UomCode"" as UNIT,
-			            d.""BaseQty"" as CONVERSION,
+                    //         sb.Append($@"SELECT
+                    //             h.""UgpEntry"",
+                    //    h.""UgpCode"" as ID_STOCK,
+                    //    b.""BcdCode"" as BARCODE,
+                    //    u.""UomCode"" as UNIT,
+                    //    d.""BaseQty"" as CONVERSION,
+                    //             case e.""UomCode"" when e.""UomCode"" then 1 else 0 end as BASE_UOM
+                    //FROM {hanaDB}.OUGP h inner join {hanaDB}.UGP1 d  on h.""UgpEntry"" = d.""UgpEntry""
+                    //inner join {hanaDB}.OUOM u  on u.""UomEntry"" = d.""UomEntry""
+                    //inner join {hanaDB}.OITM i on i.""ItemCode"" = h.""UgpCode""
+                    //left join {hanaDB}.OBCD b on b.""ItemCode"" = h.""UgpCode"" and b.""UomEntry"" = d.""UomEntry""
+                    //         left join {hanaDB}.OUOM e on e.""UomEntry""= h.""BaseUom""
+                    //where i.""ItemCode"" NOT IN ({values})
+                    //AND (i.""InvntItem"" = 'Y' and i.""SellItem"" = 'Y')
+                    //         AND i.""ItmsGrpCod"" not in (100,104,105,106,107,129,130,131,132,137)
+                    //AND u.""UomEntry"" not in (31) ORDER BY i.""ItemCode"" ASC {limitData};");
+
+                    sb.Append($@"select 
+	                    a.""UgpEntry"",
+                        a.""UgpCode"" as ID_STOCK,
+                        c.""UomCode"" as UNIT,
+                        b.""BaseQty"" as CONVERSION,
+                        d.""BcdCode"" as BARCODE,
                         case c.""UomCode"" when e.""UomCode"" then 1 else 0 end as BASE_UOM
-			        FROM {hanaDB}.OUGP h inner join {hanaDB}.UGP1 d  on h.""UgpEntry"" = d.""UgpEntry""
-			        inner join {hanaDB}.OUOM u  on u.""UomEntry"" = d.""UomEntry""
-			        inner join {hanaDB}.OITM i on i.""ItemCode"" = h.""UgpCode""
-			        left join {hanaDB}.OBCD b on b.""ItemCode"" = h.""UgpCode"" and b.""UomEntry"" = d.""UomEntry""
-                    left join {hanaDB}.OUOM e on e.""UomEntry""= h.""BaseUom""
-			        where i.""ItemCode"" NOT IN ({values})
-			        AND (i.""InvntItem"" = 'Y' and i.""SellItem"" = 'Y')
-                    AND i.""ItmsGrpCod"" not in (100,104,105,106,107,129,130,131,132,137)
-			        AND u.""UomEntry"" not in (31) ORDER BY i.""ItemCode"" ASC {limitData};");
+                    from {hanaDB}.OUGP a
+                    inner
+                    join {hanaDB}.UGP1 b on a.""UgpEntry"" = b.""UgpEntry""
+                    inner join {hanaDB}.OUOM c on b.""UomEntry"" = c.""UomEntry""
+                    inner join {hanaDB}.OITM f on f.""ItemCode"" = a.""UgpCode""
+                    left join {hanaDB}.OBCD d on a.""UgpCode"" = d.""ItemCode"" and b.""UomEntry"" = d.""UomEntry""
+                    left join {hanaDB}.OUOM e on e.""UomEntry"" = a.""BaseUom""
+                    where f.""ItemCode"" NOT IN ({values})
+                    AND (f.""InvntItem"" = 'Y' and f.""SellItem"" = 'Y')
+                    AND f.""ItmsGrpCod"" not in (100,104,105,106,107,129,130,131,132,137)
+                    and c.""UomEntry"" not in (31) ORDER BY f.""ItemCode"" ASC {limitData}; ");
 
                     break;
                 case DataSource.SporkMasterData:
