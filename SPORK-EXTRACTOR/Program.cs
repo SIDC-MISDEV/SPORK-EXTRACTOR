@@ -107,7 +107,8 @@ namespace SPORK_EXTRACTOR
                             Cancelled = item.Cancelled,
                             Category = item.Category,
                             SubCategory = item.SubCategory,
-                            SubSubCategory = item.SubSubCategory
+                            SubSubCategory = item.SubSubCategory,
+                            AllowSeniorDiscount = item.AllowSeniorDiscount
                         });
                     }
 

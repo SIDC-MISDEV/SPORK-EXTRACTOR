@@ -15,10 +15,10 @@
       <Value Profile="(Default)">1q2w#E$R</Value>
     </Setting>
     <Setting Name="MySQLServer" Type="System.String" Scope="User">
-      <Value Profile="(Default)">localhost</Value>
+      <Value Profile="(Default)">192.168.1.153</Value>
     </Setting>
     <Setting Name="MySQLDB" Type="System.String" Scope="User">
-      <Value Profile="(Default)">spork</Value>
+      <Value Profile="(Default)">spork_test</Value>
     </Setting>
     <Setting Name="MySQLUser" Type="System.String" Scope="User">
       <Value Profile="(Default)">root</Value>

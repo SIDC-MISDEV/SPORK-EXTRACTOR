@@ -15,6 +15,7 @@ namespace SPORK_EXTRACTOR
         public string Category { get; set; }
         public string SubCategory { get; set; }
         public string SubSubCategory { get; set; }
+        public bool AllowSeniorDiscount { get; set; }
     }
 
     public class HanaItemUom

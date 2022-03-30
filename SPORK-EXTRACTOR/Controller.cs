@@ -60,7 +60,8 @@ namespace SPORK_EXTRACTOR
                                 Cancelled = Convert.ToBoolean(dr["discontinued"]),
                                 Category = dr["Category"].ToString(),
                                 SubCategory = dr["SubCategory"].ToString(),
-                                SubSubCategory = dr["SubSubCategory"].ToString()
+                                SubSubCategory = dr["SubSubCategory"].ToString(),
+                                AllowSeniorDiscount = Convert.ToBoolean(dr["AllowSeniorDiscount"])
                             });
                         }
 
@@ -192,7 +193,7 @@ namespace SPORK_EXTRACTOR
 
                 for (int i = 0; i < data.Count; i++)
                 {
-                    param.Add($"(@itemcode{i}, @prefix{i}, @itemname{i}, @cancelled{i}, @category{i}, @subcategory{i}, @subsubcategory{i})");
+                    param.Add($"(@itemcode{i}, @prefix{i}, @itemname{i}, @cancelled{i}, @category{i}, @subcategory{i}, @subsubcategory{i}, @seniordiscount{i})");
                     forInsert.Add($"@itemcode{i}", data[i].ItemCode);
                     forInsert.Add($"@prefix{i}", data[i].Prefix);
                     forInsert.Add($"@itemname{i}", data[i].ItemName);
@@ -200,6 +201,7 @@ namespace SPORK_EXTRACTOR
                     forInsert.Add($"@category{i}", data[i].Category);
                     forInsert.Add($"@subcategory{i}", data[i].SubCategory);
                     forInsert.Add($"@subsubcategory{i}", data[i].SubSubCategory);
+                    forInsert.Add($"@seniordiscount{i}", data[i].AllowSeniorDiscount);
                 }
 
                 sb.Append($"{SQLQuery.InsertItemMaster} {string.Join(",", param)}");
@@ -288,8 +290,9 @@ namespace SPORK_EXTRACTOR
 			            CASE WHEN m.""Canceled"" = 'Y' THEN 1 ELSE 0 END as discontinued,
                         c.""ItmsGrpNam"" as Category,
                         m.""U_subcat"" as SubCategory,
-                        m.""U_subcat2"" as SubSubCategory
-		            FROM {hanaDB}.OITM m
+                        m.""U_subcat2"" as SubSubCategory,
+                        CASE WHEN m.""U_Senior"" = 'Y' THEN 1 ELSE 0 END as AllowSeniorDiscount
+                    FROM {hanaDB}.OITM m
                     INNER JOIN {hanaDB}.OITB c ON m.""ItmsGrpCod"" = c.""ItmsGrpCod""
                     WHERE
                     (m.""InvntItem"" = 'Y' and m.""SellItem"" = 'Y')
@@ -315,7 +318,8 @@ namespace SPORK_EXTRACTOR
 			            CASE WHEN m.""Canceled"" = 'Y' THEN 1 ELSE 0 END as discontinued,
                         c.""ItmsGrpNam"" as Category,
                         m.""U_subcat"" as SubCategory,
-                        m.""U_subcat2"" as SubSubCategory
+                        m.""U_subcat2"" as SubSubCategory,
+                        CASE WHEN m.""U_Senior"" = 'Y' THEN 1 ELSE 0 END as AllowSeniorDiscount
 		            FROM {hanaDB}.OITM m
                     INNER JOIN {hanaDB}.OITB c ON m.""ItmsGrpCod"" = c.""ItmsGrpCod""
                     WHERE
@@ -350,7 +354,6 @@ namespace SPORK_EXTRACTOR
                         c.""UomCode"" as UNIT,
                         b.""BaseQty"" as CONVERSION,
                         d.""BcdCode"" as BARCODE,
-
                         case c.""UomCode"" when e.""UomCode"" then 1 else 0 end as BASE_UOM
                     from {hanaDB}.OUGP a
                     inner
@@ -361,9 +364,7 @@ namespace SPORK_EXTRACTOR
                     left join {hanaDB}.OUOM e on e.""UomEntry"" = a.""BaseUom""
                     where (f.""InvntItem"" = 'Y' and f.""SellItem"" = 'Y')
                     AND f.""ItmsGrpCod"" not in (100,104,105,106,107,129,130,131,132,137)
-                    and c.""UomEntry"" not in (31) ORDER BY f.""ItemCode"" ASC {limitData}; ");
-
-                    sb.Append($@"");
+                    and c.""UomEntry"" not in (31) AND b.""IsActive"" = 'Y' ORDER BY f.""ItemCode"" ASC {limitData}; ");
 
                     break;
                 case DataSource.HanaUomItemCode:
@@ -402,7 +403,7 @@ namespace SPORK_EXTRACTOR
                     where f.""ItemCode"" NOT IN ({values})
                     AND (f.""InvntItem"" = 'Y' and f.""SellItem"" = 'Y')
                     AND f.""ItmsGrpCod"" not in (100,104,105,106,107,129,130,131,132,137)
-                    and c.""UomEntry"" not in (31) ORDER BY f.""ItemCode"" ASC {limitData}; ");
+                    and c.""UomEntry"" not in (31) AND b.""IsActive"" = 'Y' ORDER BY f.""ItemCode"" ASC {limitData}; ");
 
                     break;
                 case DataSource.SporkMasterData:
@@ -422,7 +423,7 @@ namespace SPORK_EXTRACTOR
             return sb;
         }
 
-        public static StringBuilder InsertItemMaster = new StringBuilder(@"INSERT INTO OITM (ItemCode, Prefix, ItemName, Cancelled, Category, SubCategory, SubSubCategory) VALUES ");
+        public static StringBuilder InsertItemMaster = new StringBuilder(@"INSERT INTO OITM (ItemCode, Prefix, ItemName, Cancelled, Category, SubCategory, SubSubCategory, AllowSeniorDiscount) VALUES ");
         public static StringBuilder InsertItemUom = new StringBuilder(@"INSERT INTO oitm_ougp_ugp1_ouom_obcd (UgpEntry, ItemCode, UomCode, Barcode, Conversion, IsBaseUOM) VALUES ");
 
     }

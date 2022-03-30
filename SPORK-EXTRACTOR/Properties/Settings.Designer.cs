@@ -73,7 +73,7 @@ namespace SPORK_EXTRACTOR.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
+        [global::System.Configuration.DefaultSettingValueAttribute("192.168.1.153")]
         public string MySQLServer {
             get {
                 return ((string)(this["MySQLServer"]));
@@ -85,7 +85,7 @@ namespace SPORK_EXTRACTOR.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("spork")]
+        [global::System.Configuration.DefaultSettingValueAttribute("spork_test")]
         public string MySQLDB {
             get {
                 return ((string)(this["MySQLDB"]));
