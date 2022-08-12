@@ -108,7 +108,8 @@ namespace SPORK_EXTRACTOR
                             Category = item.Category,
                             SubCategory = item.SubCategory,
                             SubSubCategory = item.SubSubCategory,
-                            AllowSeniorDiscount = item.AllowSeniorDiscount
+                            AllowSeniorDiscount = item.AllowSeniorDiscount,
+                            AllowDecimal = item.AllowDecimal
                         });
                     }
 

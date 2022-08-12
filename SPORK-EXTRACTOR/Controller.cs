@@ -61,7 +61,8 @@ namespace SPORK_EXTRACTOR
                                 Category = dr["Category"].ToString(),
                                 SubCategory = dr["SubCategory"].ToString(),
                                 SubSubCategory = dr["SubSubCategory"].ToString(),
-                                AllowSeniorDiscount = Convert.ToBoolean(dr["AllowSeniorDiscount"])
+                                AllowSeniorDiscount = Convert.ToBoolean(dr["AllowSeniorDiscount"]),
+                                AllowDecimal = Convert.ToBoolean(dr["AllowDecimal"])
                             });
                         }
 
@@ -193,7 +194,7 @@ namespace SPORK_EXTRACTOR
 
                 for (int i = 0; i < data.Count; i++)
                 {
-                    param.Add($"(@itemcode{i}, @prefix{i}, @itemname{i}, @cancelled{i}, @category{i}, @subcategory{i}, @subsubcategory{i}, @seniordiscount{i})");
+                    param.Add($"(@itemcode{i}, @prefix{i}, @itemname{i}, @cancelled{i}, @category{i}, @subcategory{i}, @subsubcategory{i}, @seniordiscount{i}, @allowdecimal{i})");
                     forInsert.Add($"@itemcode{i}", data[i].ItemCode);
                     forInsert.Add($"@prefix{i}", data[i].Prefix);
                     forInsert.Add($"@itemname{i}", data[i].ItemName);
@@ -202,6 +203,7 @@ namespace SPORK_EXTRACTOR
                     forInsert.Add($"@subcategory{i}", data[i].SubCategory);
                     forInsert.Add($"@subsubcategory{i}", data[i].SubSubCategory);
                     forInsert.Add($"@seniordiscount{i}", data[i].AllowSeniorDiscount);
+                    forInsert.Add($"@allowdecimal{i}", data[i].AllowDecimal);
                 }
 
                 sb.Append($"{SQLQuery.InsertItemMaster} {string.Join(",", param)}");
@@ -291,7 +293,8 @@ namespace SPORK_EXTRACTOR
                         c.""ItmsGrpNam"" as Category,
                         m.""U_subcat"" as SubCategory,
                         m.""U_subcat2"" as SubSubCategory,
-                        CASE WHEN m.""U_Senior"" = 'Y' THEN 1 ELSE 0 END as AllowSeniorDiscount
+                        CASE WHEN m.""U_Senior"" = 'Y' THEN 1 ELSE 0 END as AllowSeniorDiscount,
+                        CASE WHEN m.""U_AllowDecimal"" = 'Y' THEN 1 ELSE 0 END as AllowDecimal
                     FROM {hanaDB}.OITM m
                     INNER JOIN {hanaDB}.OITB c ON m.""ItmsGrpCod"" = c.""ItmsGrpCod""
                     WHERE
@@ -319,7 +322,8 @@ namespace SPORK_EXTRACTOR
                         c.""ItmsGrpNam"" as Category,
                         m.""U_subcat"" as SubCategory,
                         m.""U_subcat2"" as SubSubCategory,
-                        CASE WHEN m.""U_Senior"" = 'Y' THEN 1 ELSE 0 END as AllowSeniorDiscount
+                        CASE WHEN m.""U_Senior"" = 'Y' THEN 1 ELSE 0 END as AllowSeniorDiscount,
+                        CASE WHEN m.""U_AllowDecimal"" = 'Y' THEN 1 ELSE 0 END as AllowDecimal
 		            FROM {hanaDB}.OITM m
                     INNER JOIN {hanaDB}.OITB c ON m.""ItmsGrpCod"" = c.""ItmsGrpCod""
                     WHERE
@@ -423,7 +427,7 @@ namespace SPORK_EXTRACTOR
             return sb;
         }
 
-        public static StringBuilder InsertItemMaster = new StringBuilder(@"INSERT INTO OITM (ItemCode, Prefix, ItemName, Cancelled, Category, SubCategory, SubSubCategory, AllowSeniorDiscount) VALUES ");
+        public static StringBuilder InsertItemMaster = new StringBuilder(@"INSERT INTO OITM (ItemCode, Prefix, ItemName, Cancelled, Category, SubCategory, SubSubCategory, AllowSeniorDiscount, AllowDecimalQty) VALUES ");
         public static StringBuilder InsertItemUom = new StringBuilder(@"INSERT INTO oitm_ougp_ugp1_ouom_obcd (UgpEntry, ItemCode, UomCode, Barcode, Conversion, IsBaseUOM) VALUES ");
 
     }
