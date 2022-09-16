@@ -121,7 +121,7 @@ namespace SPORK_EXTRACTOR.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
         public int RecordCountLimit {
             get {
                 return ((int)(this["RecordCountLimit"]));
