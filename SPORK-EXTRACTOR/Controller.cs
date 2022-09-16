@@ -276,27 +276,20 @@ namespace SPORK_EXTRACTOR
             {
                 case DataSource.HanaMasterData:
 
-                    //      sb.Append($@"SELECT
-                    // ""ItemCode"" as itemcode,
-                    // LEFT(""ItemCode"",3) as prefix,
-                    // ""ItemName"" as name,
-                    // CASE WHEN ""Canceled"" = 'Y' THEN 1 ELSE 0 END as discontinued
-                    //FROM {hanaDB}.OITM where
-                    //      (""InvntItem"" = 'Y' and ""SellItem"" = 'Y')
-                    //      AND  ""ItmsGrpCod"" NOT IN (100,104,105,106,107,129,130,131,132,137) ORDER BY ""ItemCode"" ASC {limitData};");
-
                     sb.Append($@"SELECT
 			            m.""ItemCode"" as itemcode,
 			            LEFT(m.""ItemCode"",3) as prefix,
 			            m.""ItemName"" as name,
 			            CASE WHEN m.""Canceled"" = 'Y' THEN 1 ELSE 0 END as discontinued,
-                        c.""ItmsGrpNam"" as Category,
-                        m.""U_subcat"" as SubCategory,
-                        m.""U_subcat2"" as SubSubCategory,
+                        UPPER(c.""ItmsGrpNam"") as Category,
+                        CASE WHEN LENGTH(m.""U_subcat"") BETWEEN '1' AND '4' THEN d.""Name"" ELSE m.""U_subcat"" END as SubCategory,
+                        CASE WHEN LENGTH(m.""U_subcat2"") BETWEEN '1' AND '4'THEN e.""Name"" ELSE m.""U_subcat2"" END as SubSubCategory,
                         CASE WHEN m.""U_Senior"" = 'Y' THEN 1 ELSE 0 END as AllowSeniorDiscount,
                         CASE WHEN m.""U_AllowDecimal"" = 'Y' THEN 1 ELSE 0 END as AllowDecimal
                     FROM {hanaDB}.OITM m
                     INNER JOIN {hanaDB}.OITB c ON m.""ItmsGrpCod"" = c.""ItmsGrpCod""
+                    LEFT JOIN {hanaDB}.""@SUBCAT""  d on m.""U_subcat"" = d.""Code""
+                    LEFT JOIN {hanaDB}.""@SUBSUBCATEGORY""  e on m.""U_subcat2"" = e.""Code""
                     WHERE
                     (m.""InvntItem"" = 'Y' and m.""SellItem"" = 'Y')
                     AND  m.""ItmsGrpCod"" NOT IN (100,104,105,106,107,129,130,131,132,137) ORDER BY m.""ItemCode"" ASC {limitData};");
@@ -304,28 +297,20 @@ namespace SPORK_EXTRACTOR
                     break;
                 case DataSource.HanaMasterItemCode:
 
-                    //      sb.Append($@"SELECT
-                    // ""ItemCode"" as itemcode,
-                    // LEFT(""ItemCode"",3) as prefix,
-                    // ""ItemName"" as name,
-                    // CASE WHEN ""Canceled"" = 'Y' THEN 1 ELSE 0 END as discontinued
-                    //FROM {hanaDB}.OITM where
-                    //""ItemCode"" NOT IN ({values})
-                    //AND (""InvntItem"" = 'Y' and ""SellItem"" = 'Y')
-                    //AND ""ItmsGrpCod"" NOT IN (100,104,105,106,107,129,130,131,132,137)  ORDER BY ""ItemCode"" ASC {limitData};");
-
                     sb.Append($@"SELECT
 			            m.""ItemCode"" as itemcode,
 			            LEFT(m.""ItemCode"",3) as prefix,
 			            m.""ItemName"" as name,
 			            CASE WHEN m.""Canceled"" = 'Y' THEN 1 ELSE 0 END as discontinued,
-                        c.""ItmsGrpNam"" as Category,
-                        m.""U_subcat"" as SubCategory,
-                        m.""U_subcat2"" as SubSubCategory,
+                        UPPER(c.""ItmsGrpNam"") as Category,
+                        CASE WHEN LENGTH(m.""U_subcat"") BETWEEN '1' AND '4' THEN d.""Name"" ELSE m.""U_subcat"" END as SubCategory,
+                        CASE WHEN LENGTH(m.""U_subcat2"") BETWEEN '1' AND '4'THEN e.""Name"" ELSE m.""U_subcat2"" END as SubSubCategory,
                         CASE WHEN m.""U_Senior"" = 'Y' THEN 1 ELSE 0 END as AllowSeniorDiscount,
                         CASE WHEN m.""U_AllowDecimal"" = 'Y' THEN 1 ELSE 0 END as AllowDecimal
 		            FROM {hanaDB}.OITM m
                     INNER JOIN {hanaDB}.OITB c ON m.""ItmsGrpCod"" = c.""ItmsGrpCod""
+                    LEFT JOIN {hanaDB}.""@SUBCAT""  d on m.""U_subcat"" = d.""Code""
+                    LEFT JOIN {hanaDB}.""@SUBSUBCATEGORY""  e on m.""U_subcat2"" = e.""Code""
                     WHERE
                     m.""ItemCode"" NOT IN ({values})
                     AND (m.""InvntItem"" = 'Y' and m.""SellItem"" = 'Y')
@@ -333,23 +318,6 @@ namespace SPORK_EXTRACTOR
 
                     break;
                 case DataSource.HanaUom:
-
-                    //         sb.Append($@"SELECT
-                    //             h.""UgpEntry"",
-                    //             h.""UgpCode"" as ID_STOCK,
-                    //    b.""BcdCode"" as BARCODE,
-                    //    u.""UomCode"" as UNIT,
-                    //    d.""BaseQty"" as CONVERSION,
-                    //             case e.""UomCode"" when e.""UomCode"" then 1 else 0 end as BASE_UOM
-                    //         FROM {hanaDB}.OUGP h inner join {hanaDB}.UGP1 d  on h.""UgpEntry"" = d.""UgpEntry""
-                    //inner join {hanaDB}.OUOM u  on u.""UomEntry"" = d.""UomEntry""
-                    //inner join {hanaDB}.OITM i on i.""ItemCode"" = h.""UgpCode""
-                    //left join {hanaDB}.OBCD b on b.""ItemCode"" = h.""UgpCode"" and b.""UomEntry"" = d.""UomEntry""
-                    //         left join {hanaDB}.OUOM e on e.""UomEntry""= h.""BaseUom""
-                    //         where 
-                    //(i.""InvntItem"" = 'Y' and i.""SellItem"" = 'Y')
-                    //         AND i.""ItmsGrpCod"" not in (100,104,105,106,107,129,130,131,132,137)
-                    //and u.""UomEntry"" not in (31) ORDER BY i.""ItemCode"" ASC {limitData};");
 
                     sb.Append($@"select 
 	                    a.""UgpEntry"",
@@ -372,23 +340,6 @@ namespace SPORK_EXTRACTOR
 
                     break;
                 case DataSource.HanaUomItemCode:
-
-                    //         sb.Append($@"SELECT
-                    //             h.""UgpEntry"",
-                    //    h.""UgpCode"" as ID_STOCK,
-                    //    b.""BcdCode"" as BARCODE,
-                    //    u.""UomCode"" as UNIT,
-                    //    d.""BaseQty"" as CONVERSION,
-                    //             case e.""UomCode"" when e.""UomCode"" then 1 else 0 end as BASE_UOM
-                    //FROM {hanaDB}.OUGP h inner join {hanaDB}.UGP1 d  on h.""UgpEntry"" = d.""UgpEntry""
-                    //inner join {hanaDB}.OUOM u  on u.""UomEntry"" = d.""UomEntry""
-                    //inner join {hanaDB}.OITM i on i.""ItemCode"" = h.""UgpCode""
-                    //left join {hanaDB}.OBCD b on b.""ItemCode"" = h.""UgpCode"" and b.""UomEntry"" = d.""UomEntry""
-                    //         left join {hanaDB}.OUOM e on e.""UomEntry""= h.""BaseUom""
-                    //where i.""ItemCode"" NOT IN ({values})
-                    //AND (i.""InvntItem"" = 'Y' and i.""SellItem"" = 'Y')
-                    //         AND i.""ItmsGrpCod"" not in (100,104,105,106,107,129,130,131,132,137)
-                    //AND u.""UomEntry"" not in (31) ORDER BY i.""ItemCode"" ASC {limitData};");
 
                     sb.Append($@"select 
 	                    a.""UgpEntry"",
