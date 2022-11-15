@@ -130,5 +130,17 @@ namespace SPORK_EXTRACTOR.Properties {
                 this["RecordCountLimit"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100,104,106,107,129,130,131,132,137")]
+        public string ItemGroupCode {
+            get {
+                return ((string)(this["ItemGroupCode"]));
+            }
+            set {
+                this["ItemGroupCode"] = value;
+            }
+        }
     }
 }

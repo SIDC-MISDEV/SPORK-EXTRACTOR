@@ -29,5 +29,8 @@
     <Setting Name="RecordCountLimit" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1000</Value>
     </Setting>
+    <Setting Name="ItemGroupCode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">100,104,106,107,129,130,131,132,137</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
