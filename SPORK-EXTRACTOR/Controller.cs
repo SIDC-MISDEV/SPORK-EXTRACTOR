@@ -292,7 +292,7 @@ namespace SPORK_EXTRACTOR
                     LEFT JOIN {hanaDB}.""@SUBSUBCATEGORY""  e on m.""U_subcat2"" = e.""Code""
                     WHERE
                     (m.""InvntItem"" = 'Y' and m.""SellItem"" = 'Y')
-                    AND  m.""ItmsGrpCod"" NOT IN (100,104,105,106,107,129,130,131,132,137) ORDER BY m.""ItemCode"" ASC {limitData};");
+                    AND  m.""ItmsGrpCod"" NOT IN ({Properties.Settings.Default.ItemGroupCode}) ORDER BY m.""ItemCode"" ASC {limitData};");
 
                     break;
                 case DataSource.HanaMasterItemCode:
@@ -314,7 +314,7 @@ namespace SPORK_EXTRACTOR
                     WHERE
                     m.""ItemCode"" NOT IN ({values})
                     AND (m.""InvntItem"" = 'Y' and m.""SellItem"" = 'Y')
-                    AND  m.""ItmsGrpCod"" NOT IN (100,104,105,106,107,129,130,131,132,137) ORDER BY m.""ItemCode"" ASC {limitData};");
+                    AND  m.""ItmsGrpCod"" NOT IN ({Properties.Settings.Default.ItemGroupCode}) ORDER BY m.""ItemCode"" ASC {limitData};");
 
                     break;
                 case DataSource.HanaUom:
@@ -335,7 +335,7 @@ namespace SPORK_EXTRACTOR
                     left join {hanaDB}.OBCD d on a.""UgpCode"" = d.""ItemCode"" and b.""UomEntry"" = d.""UomEntry""
                     left join {hanaDB}.OUOM e on e.""UomEntry"" = a.""BaseUom""
                     where (f.""InvntItem"" = 'Y' and f.""SellItem"" = 'Y')
-                    AND f.""ItmsGrpCod"" not in (100,104,105,106,107,129,130,131,132,137)
+                    AND f.""ItmsGrpCod"" not in ({Properties.Settings.Default.ItemGroupCode})
                     and c.""UomEntry"" not in (31) AND b.""IsActive"" = 'Y' ORDER BY f.""ItemCode"" ASC {limitData}; ");
 
                     break;
@@ -357,7 +357,7 @@ namespace SPORK_EXTRACTOR
                     left join {hanaDB}.OUOM e on e.""UomEntry"" = a.""BaseUom""
                     where f.""ItemCode"" NOT IN ({values})
                     AND (f.""InvntItem"" = 'Y' and f.""SellItem"" = 'Y')
-                    AND f.""ItmsGrpCod"" not in (100,104,105,106,107,129,130,131,132,137)
+                    AND f.""ItmsGrpCod"" not in ({Properties.Settings.Default.ItemGroupCode})
                     and c.""UomEntry"" not in (31) AND b.""IsActive"" = 'Y' ORDER BY f.""ItemCode"" ASC {limitData}; ");
 
                     break;
