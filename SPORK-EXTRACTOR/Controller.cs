@@ -319,6 +319,26 @@ namespace SPORK_EXTRACTOR
                     break;
                 case DataSource.HanaUom:
 
+                    //sb.Append($@"select 
+	                   // a.""UgpEntry"",
+
+                    //    a.""UgpCode"" as ID_STOCK,
+                    //    c.""UomCode"" as UNIT,
+                    //    b.""BaseQty"" as CONVERSION,
+                    //    d.""BcdCode"" as BARCODE,
+                    //    case c.""UomCode"" when e.""UomCode"" then 1 else 0 end as BASE_UOM
+                    //from {hanaDB}.OUGP a
+                    //inner
+                    //join {hanaDB}.UGP1 b on a.""UgpEntry"" = b.""UgpEntry""
+                    //inner join {hanaDB}.OUOM c on b.""UomEntry"" = c.""UomEntry""
+                    //inner join {hanaDB}.OITM f on f.""ItemCode"" = a.""UgpCode""
+                    //left join {hanaDB}.OBCD d on a.""UgpCode"" = d.""ItemCode"" and b.""UomEntry"" = d.""UomEntry""
+                    //left join {hanaDB}.OUOM e on e.""UomEntry"" = a.""BaseUom""
+                    //where (f.""InvntItem"" = 'Y' and f.""SellItem"" = 'Y')
+                    //AND f.""ItmsGrpCod"" not in ({Properties.Settings.Default.ItemGroupCode})
+                    //and c.""UomEntry"" not in (31) 
+                    //AND b.""IsActive"" = 'Y' ORDER BY f.""ItemCode"" ASC {limitData}; ");
+
                     sb.Append($@"select 
 	                    a.""UgpEntry"",
 
@@ -336,10 +356,30 @@ namespace SPORK_EXTRACTOR
                     left join {hanaDB}.OUOM e on e.""UomEntry"" = a.""BaseUom""
                     where (f.""InvntItem"" = 'Y' and f.""SellItem"" = 'Y')
                     AND f.""ItmsGrpCod"" not in ({Properties.Settings.Default.ItemGroupCode})
-                    and c.""UomEntry"" not in (31) AND b.""IsActive"" = 'Y' ORDER BY f.""ItemCode"" ASC {limitData}; ");
+                    AND b.""IsActive"" = 'Y' ORDER BY f.""ItemCode"" ASC {limitData}; ");
+
 
                     break;
                 case DataSource.HanaUomItemCode:
+
+                    //sb.Append($@"select 
+	                   // a.""UgpEntry"",
+                    //    a.""UgpCode"" as ID_STOCK,
+                    //    c.""UomCode"" as UNIT,
+                    //    b.""BaseQty"" as CONVERSION,
+                    //    d.""BcdCode"" as BARCODE,
+                    //    case c.""UomCode"" when e.""UomCode"" then 1 else 0 end as BASE_UOM
+                    //from {hanaDB}.OUGP a
+                    //inner
+                    //join {hanaDB}.UGP1 b on a.""UgpEntry"" = b.""UgpEntry""
+                    //inner join {hanaDB}.OUOM c on b.""UomEntry"" = c.""UomEntry""
+                    //inner join {hanaDB}.OITM f on f.""ItemCode"" = a.""UgpCode""
+                    //left join {hanaDB}.OBCD d on a.""UgpCode"" = d.""ItemCode"" and b.""UomEntry"" = d.""UomEntry""
+                    //left join {hanaDB}.OUOM e on e.""UomEntry"" = a.""BaseUom""
+                    //where f.""ItemCode"" NOT IN ({values})
+                    //AND (f.""InvntItem"" = 'Y' and f.""SellItem"" = 'Y')
+                    //AND f.""ItmsGrpCod"" not in ({Properties.Settings.Default.ItemGroupCode})
+                    //and c.""UomEntry"" not in (31) AND b.""IsActive"" = 'Y' ORDER BY f.""ItemCode"" ASC {limitData}; ");
 
                     sb.Append($@"select 
 	                    a.""UgpEntry"",
@@ -358,7 +398,7 @@ namespace SPORK_EXTRACTOR
                     where f.""ItemCode"" NOT IN ({values})
                     AND (f.""InvntItem"" = 'Y' and f.""SellItem"" = 'Y')
                     AND f.""ItmsGrpCod"" not in ({Properties.Settings.Default.ItemGroupCode})
-                    and c.""UomEntry"" not in (31) AND b.""IsActive"" = 'Y' ORDER BY f.""ItemCode"" ASC {limitData}; ");
+                    AND b.""IsActive"" = 'Y' ORDER BY f.""ItemCode"" ASC {limitData}; ");
 
                     break;
                 case DataSource.SporkMasterData:
