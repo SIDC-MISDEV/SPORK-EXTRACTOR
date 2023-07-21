@@ -37,7 +37,7 @@ namespace SPORK_BRANCH_WH_EXTRACTOR.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("SIDCDB")]
+        [global::System.Configuration.DefaultSettingValueAttribute("TESTDB29")]
         public string HanaDB {
             get {
                 return ((string)(this["HanaDB"]));
@@ -85,7 +85,7 @@ namespace SPORK_BRANCH_WH_EXTRACTOR.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("spork")]
+        [global::System.Configuration.DefaultSettingValueAttribute("spork_test")]
         public string MySQLDB {
             get {
                 return ((string)(this["MySQLDB"]));
@@ -121,10 +121,10 @@ namespace SPORK_BRANCH_WH_EXTRACTOR.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
-        public string RecordCountLimit {
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int RecordCountLimit {
             get {
-                return ((string)(this["RecordCountLimit"]));
+                return ((int)(this["RecordCountLimit"]));
             }
             set {
                 this["RecordCountLimit"] = value;

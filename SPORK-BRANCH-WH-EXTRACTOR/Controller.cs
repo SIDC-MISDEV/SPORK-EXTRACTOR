@@ -16,7 +16,7 @@ namespace SPORK_BRANCH_WH_EXTRACTOR
         private string sporkDB = Properties.Settings.Default.MySQLDB;
         private string sporkUser = Properties.Settings.Default.MySQLUser;
         private string sporkPass = Properties.Settings.Default.MySQLPassword;
-        private string recordLimit = Properties.Settings.Default.RecordCountLimit;
+        private int recordLimit = Properties.Settings.Default.RecordCountLimit;
 
         private string GetConnectionString(Server server)
         {
@@ -44,7 +44,7 @@ namespace SPORK_BRANCH_WH_EXTRACTOR
                     {
                         while (dr.Read())
                         {
-                            list.Add(dr["branchcode"].ToString());
+                            list.Add(dr["warehousecode"].ToString());
                         }
                     }
                 }
@@ -88,9 +88,9 @@ namespace SPORK_BRANCH_WH_EXTRACTOR
                         {
                             warehouse.Add(new BranchWarehouse
                             {
-                                BranchCode = dr["Code"].ToString(),
+                                BranchCode = dr["Branch"].ToString(),
                                 WarehouseCode = dr["WhsCode"].ToString(),
-                                Description = dr["Name"].ToString()
+                                Description = dr["WhsName"].ToString()
                             });
                         }
                     }

@@ -6,7 +6,7 @@
       <Value Profile="(Default)">192.168.1.72:30015</Value>
     </Setting>
     <Setting Name="HanaDB" Type="System.String" Scope="User">
-      <Value Profile="(Default)">SIDCDB</Value>
+      <Value Profile="(Default)">TESTDB29</Value>
     </Setting>
     <Setting Name="HanaUser" Type="System.String" Scope="User">
       <Value Profile="(Default)">SYSTEM</Value>
@@ -18,7 +18,7 @@
       <Value Profile="(Default)">192.168.1.153</Value>
     </Setting>
     <Setting Name="MySQLDB" Type="System.String" Scope="User">
-      <Value Profile="(Default)">spork</Value>
+      <Value Profile="(Default)">spork_test</Value>
     </Setting>
     <Setting Name="MySQLUser" Type="System.String" Scope="User">
       <Value Profile="(Default)">root</Value>
@@ -26,8 +26,8 @@
     <Setting Name="MySQLPassword" Type="System.String" Scope="User">
       <Value Profile="(Default)">supervisor</Value>
     </Setting>
-    <Setting Name="RecordCountLimit" Type="System.String" Scope="User">
-      <Value Profile="(Default)">1000</Value>
+    <Setting Name="RecordCountLimit" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">100</Value>
     </Setting>
   </Settings>
 </SettingsFile>

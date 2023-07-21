@@ -24,8 +24,6 @@ namespace SPORK_BRANCH_WH_EXTRACTOR
                 Console.WriteLine(er.Message);
                 WriteLogs(er.Message);
             }
-
-            Console.ReadKey();
         }
 
         static void WriteLogs(string msg)
@@ -35,38 +33,46 @@ namespace SPORK_BRANCH_WH_EXTRACTOR
 
         static void ProcessData()
         {
-            List<BranchWarehouse> branchWHC = new List<BranchWarehouse>();
-
-            Console.WriteLine("Start checking data in SPORK db...");
-            //Get saved warehouse in spork db
-            branchWarehouseExisting = GetWarehouseFromLocal();
-
-            //Check if spork db have saved data.
-            if (branchWarehouseExisting.Count > 0)
+            try
             {
-                Console.WriteLine("Getting data to SAP Hana DB...");
+                List<BranchWarehouse> branchWHC = new List<BranchWarehouse>();
 
-                //Get warehouse in SAP Hana DB
-                branchWHC = GetWarehouse(branchWarehouseExisting);
+                Console.WriteLine("Start checking data in SPORK db...");
+                //Get saved warehouse in spork db
+                branchWarehouseExisting = GetWarehouseFromLocal();
 
-                if (branchWHC.Count > 0)
+                //Check if spork db have saved data.
+                if (branchWarehouseExisting.Count > 0)
                 {
-                    Console.WriteLine("Saving data to SPORK db...");
-                    SaveWarehouse(branchWHC);
+                    Console.WriteLine("Getting data to SAP Hana DB...");
+
+                    //Get warehouse in SAP Hana DB
+                    branchWHC = GetWarehouse(branchWarehouseExisting);
+
+                    if (branchWHC.Count > 0)
+                    {
+                        Console.WriteLine("Saving data to SPORK db...");
+                        SaveWarehouse(branchWHC);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Getting branch and warehouse data to SAP Hana DB...");
+
+                    //Get vendors in SAP Hana DB
+                    branchWHC = GetWarehouse();
+
+                    if (branchWHC.Count > 0)
+                    {
+                        Console.WriteLine("Saving data to SPORK db...");
+                        SaveWarehouse(branchWHC);
+                    }
                 }
             }
-            else
+            catch
             {
-                Console.WriteLine("Getting branch and warehouse data to SAP Hana DB...");
 
-                //Get vendors in SAP Hana DB
-                branchWHC = GetWarehouse();
-
-                if (branchWHC.Count > 0)
-                {
-                    Console.WriteLine("Saving data to SPORK db...");
-                    SaveWarehouse(branchWHC);
-                }
+                throw;
             }
         }
 
