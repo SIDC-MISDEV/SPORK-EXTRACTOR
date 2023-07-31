@@ -278,7 +278,7 @@ namespace SPORK_EXTRACTOR
 
                     sb.Append($@"SELECT
 			            m.""ItemCode"" as itemcode,
-			            LEFT(m.""ItemCode"",3) as prefix,
+			            CASE WHEN UPPER(c.""ItmsGrpNam"") = 'GROCERIES_KDEXEMPT' THEN 'GRX' ELSE LEFT(m.""ItemCode"",3) END as prefix,
 			            m.""ItemName"" as name,
 			            CASE WHEN m.""Canceled"" = 'Y' THEN 1 ELSE 0 END as discontinued,
                         UPPER(c.""ItmsGrpNam"") as Category,
@@ -299,7 +299,7 @@ namespace SPORK_EXTRACTOR
 
                     sb.Append($@"SELECT
 			            m.""ItemCode"" as itemcode,
-			            LEFT(m.""ItemCode"",3) as prefix,
+			            CASE WHEN UPPER(c.""ItmsGrpNam"") = 'GROCERIES_KDEXEMPT' THEN 'GRX' ELSE LEFT(m.""ItemCode"",3) END as prefix,
 			            m.""ItemName"" as name,
 			            CASE WHEN m.""Canceled"" = 'Y' THEN 1 ELSE 0 END as discontinued,
                         UPPER(c.""ItmsGrpNam"") as Category,
