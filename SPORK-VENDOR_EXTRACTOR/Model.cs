@@ -13,5 +13,6 @@ namespace SPORK_VENDOR_EXTRACTOR
         public string Address { get; set; }
         public string Country { get; set; }
         public string ZipCode { get; set; }
+        public bool Active { get; set; }
     }
 }

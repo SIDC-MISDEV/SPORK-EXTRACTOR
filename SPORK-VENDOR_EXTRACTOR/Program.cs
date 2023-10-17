@@ -12,6 +12,7 @@ namespace SPORK_VENDOR_EXTRACTOR
     {
         static List<Vendor> vendor = new List<Vendor>();
         static List<string> vendorExisting = new List<string>();
+        static List<Vendor> vendorUpdated = new List<Vendor>();
 
         static string logFile = "Applog.txt";
 
@@ -36,7 +37,14 @@ namespace SPORK_VENDOR_EXTRACTOR
             Console.WriteLine("Start checking data in SPORK db...");
             //Get saved vendors in spork db
             vendorExisting = GetVendorFromLocal();
+            vendorUpdated = GetLastUpdateVendor();
 
+            //UpdateVendor record
+            if (vendorUpdated.Count > 0)
+            {
+                Console.WriteLine("Saving data to SPORK db...");
+                UpdateVendor(vendorUpdated);
+            }
             //Check if spork db have saved data.
             if (vendorExisting.Count > 0)
             {
@@ -86,6 +94,21 @@ namespace SPORK_VENDOR_EXTRACTOR
             }
         }
 
+        static List<Vendor> GetLastUpdateVendor()
+        {
+            try
+            {
+                Controller controller = new Controller();
+
+                return controller.GetLastUpdatedVendor();
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+
         static void SaveVendor(List<Vendor> data)
         {
             try
@@ -97,7 +120,7 @@ namespace SPORK_VENDOR_EXTRACTOR
 
                 if(count > 0)
                 {
-                    WriteLogs($"Successfully saved {count} records.");
+                    WriteLogs($"Save Successfully, {count} records.");
                 }
 
             }
@@ -108,6 +131,27 @@ namespace SPORK_VENDOR_EXTRACTOR
             }
         }
 
+        static void UpdateVendor(List<Vendor> data)
+        {
+            try
+            {
+                Controller controller = new Controller();
+                int count = 0;
+
+                count = controller.Update(data);
+
+                if (count > 0)
+                {
+                    WriteLogs($"Updated Successfully, {count} records.");
+                }
+
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
         static List<Vendor> GetVendors(List<string> data = null)
         {
             try
