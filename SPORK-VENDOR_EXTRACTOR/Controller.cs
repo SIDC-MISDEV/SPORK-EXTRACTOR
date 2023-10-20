@@ -57,6 +57,43 @@ namespace SPORK_VENDOR_EXTRACTOR
             }
         }
 
+        public List<Vendor> GetLastUpdatedVendor()
+        {
+            try
+            {
+                var result = new List<Vendor>();
+
+                using (var conn = new HanaSQLHelper(GetConnectionString(Server.SAPHana)))
+                {
+                    conn.ArgMySQLCommand = SQLQuery.GetData(DataSource.UpdatedVendor);
+
+                    using (var dr = conn.GetMySQLReader())
+                    {
+                        while (dr.Read())
+                        {
+                            
+                            result.Add(new Vendor
+                            {
+                                VendorCode = dr["vendorcode"].ToString(),
+                                VendorName = dr["vendorname"].ToString(),
+                                Address = dr["address"].ToString(),
+                                Country = dr["country"].ToString(),
+                                ZipCode = dr["zipcode"].ToString(),
+                                Active = dr["active"].ToString() == "N" ? false : true,
+                            });
+                        }
+                    }
+
+                    return result;
+                }
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
+
         public List<Vendor> GetVendors(List<string> vendorCode = null)
         {
             try
@@ -92,6 +129,7 @@ namespace SPORK_VENDOR_EXTRACTOR
                                 Address = dr["address"].ToString(),
                                 Country = dr["country"].ToString(),
                                 ZipCode = dr["zipcode"].ToString(),
+                                Active = Convert.ToBoolean(dr["active"].ToString()),
                             });
                         }
                     }
@@ -119,12 +157,13 @@ namespace SPORK_VENDOR_EXTRACTOR
 
                 for (int i = 0; i < vendors.Count(); i++)
                 {
-                    parameters.Add($"(@vendorcode{i}, @vendorname{i}, @address{i}, @country{i}, @zipcode{i})");
+                    parameters.Add($"(@vendorcode{i}, @vendorname{i}, @address{i}, @country{i}, @zipcode{i}, @active{i})");
                     param.Add($"@vendorcode{i}", vendors[i].VendorCode);
                     param.Add($"@vendorname{i}", vendors[i].VendorName);
                     param.Add($"@address{i}", vendors[i].Address);
                     param.Add($"@zipcode{i}", vendors[i].ZipCode);
                     param.Add($"@country{i}", vendors[i].Country);
+                    param.Add($"@active{i}", vendors[i].Active);
                 }
 
                 sb.Append($"{string.Join(",", parameters)};");
@@ -144,7 +183,73 @@ namespace SPORK_VENDOR_EXTRACTOR
                 throw;
             }
         }
+
+        public int Update(List<Vendor> vendors)
+        {
+            try
+            {
+                #region OLD
+                //Dictionary<string, object> param = new Dictionary<string, object>();
+                //List<string> parameters = new List<string>();
+                //StringBuilder sb = new StringBuilder();
+                //int result = 0;
+
+                //sb.Append(SQLQuery.UpdateVendor());
+
+                //for (int i = 0; i < vendors.Count(); i++)
+                //{
+                //    //parameters.Add($"(@vendorcode{i}, @vendorname{i}, @address{i}, @country{i}, @zipcode{i}, @active{i})");
+                //    param.Add($"@vendorcode{i}", vendors[i].VendorCode);
+                //    param.Add($"@vendorname{i}", vendors[i].VendorName);
+                //    param.Add($"@address{i}", vendors[i].Address);
+                //    param.Add($"@zipcode{i}", vendors[i].ZipCode);
+                //    param.Add($"@country{i}", vendors[i].Country);
+                //    param.Add($"@active{i}", vendors[i].Active);
+                //}
+
+                //sb.Append($"{string.Join(",", parameters)};");
+
+                //using (var conn = new MySQLHelper(GetConnectionString(Server.MySQL), sb, param))
+                //{
+                //    conn.BeginTransaction();
+                //    result = conn.ExecuteMySQL();
+                //    conn.CommitTransaction();
+                //}
+                #endregion
+                var result=0;
+
+                using (var conn = new MySQLHelper(GetConnectionString(Server.MySQL)))
+                {
+                    conn.BeginTransaction();
+                    foreach (var item in vendors)
+                    {
+                        var param = new Dictionary<string, object>()
+                        {
+                            { "@vendorcode", item.VendorCode },
+                            { "@vendorname", item.VendorName },
+                            { "@address", item.Address },
+                            { "@country", item.Country },
+                            { "@zipcode", item.ZipCode },
+                            { "@active", item.Active }
+                        };
+                        
+                        conn.ArgMySQLCommand = SQLQuery.UpdateVendor(item.VendorCode);
+                        conn.ArgMysqlParam = param;
+                        result += conn.ExecuteMySQL();
+                    }
+                    
+                    conn.CommitTransaction();
+                }
+                return result;
+            }
+            catch
+            {
+
+                throw;
+            }
+        }
     }
+
 
     public class SQLQuery
     {
@@ -165,7 +270,8 @@ namespace SPORK_VENDOR_EXTRACTOR
                             RTRIM(""CardName"") as VendorName,
                             RTRIM(""Address"") as Address,
                             ""Country"",
-                            ""ZipCode"" as ZipCode
+                            ""ZipCode"" as ZipCode,
+                            ""validFor"" as Active
                         FROM {hanaDB}.OCRD WHERE ""CardType"" = 'S' AND LEFT(""CardCode"", 3) ='VDR' ORDER BY ""CardCode"" ASC LIMIT {recordLimit}");
                     break;
                 case DataSource.VendorNotRegistered:
@@ -174,8 +280,19 @@ namespace SPORK_VENDOR_EXTRACTOR
                             RTRIM(""CardName"") as VendorName,
                             RTRIM(""Address"") as Address,
                             ""Country"",
-                            ""ZipCode"" as ZipCode
+                            ""ZipCode"" as ZipCode,
+                            ""validFor"" as Active
                         FROM {hanaDB}.OCRD WHERE ""CardType"" = 'S' AND ""CardCode"" NOT IN ({values}) ORDER BY ""CardCode"" ASC LIMIT {recordLimit}");
+                    break;
+                case DataSource.UpdatedVendor:
+                    sb.Append($@"SELECT 
+	                        RTRIM(""CardCode"") as VendorCode,
+                            RTRIM(""CardName"") as VendorName,
+                            RTRIM(""Address"") as Address,
+                            ""Country"",
+                            ""ZipCode"" as ZipCode,
+                            ""validFor"" as Active
+                        FROM {hanaDB}.OCRD WHERE ""CardType"" = 'S' AND ""UpdateDate"" is not null AND ""UpdateDate"" = TO_DATE(NOW())  ORDER BY ""CardCode"" ASC LIMIT {recordLimit}");
                     break;
                 default:
                     break;
@@ -186,9 +303,14 @@ namespace SPORK_VENDOR_EXTRACTOR
 
         public static StringBuilder InsertVendor()
         {
-            return new StringBuilder(@"INSERT INTO ocrd (vendor_code, vendor_name, address, country, zip_code) VALUES ");
+            return new StringBuilder(@"INSERT INTO ocrd (vendor_code, vendor_name, address, country, zip_code, active) VALUES ");
         }
-    }
+
+        public static StringBuilder UpdateVendor(string vendorCode)
+        {
+            return new StringBuilder(@"UPDATE ocrd set vendor_name=@vendorname, address=@address, country=@country, zip_code=@zipcode, active=@active WHERE vendor_code=@vendorcode");
+        }
+}
 
     public enum Server
     {
@@ -199,6 +321,7 @@ namespace SPORK_VENDOR_EXTRACTOR
     {
         Vendor,
         VendorSap,
-        VendorNotRegistered
+        VendorNotRegistered,
+        UpdatedVendor
     }
 }
