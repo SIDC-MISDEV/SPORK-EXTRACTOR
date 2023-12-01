@@ -129,6 +129,7 @@ namespace SPORK_VENDOR_EXTRACTOR
                                 Address = dr["address"].ToString(),
                                 Country = dr["country"].ToString(),
                                 ZipCode = dr["zipcode"].ToString(),
+                                //test change
                                 Active = dr["active"].ToString() == "N" ? false : true,
                             });
                         }
