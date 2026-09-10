@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ACryptoServiceProvider.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="DAL.cs" />
     <Compile Include="Model.cs" />

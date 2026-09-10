@@ -18,12 +18,19 @@ namespace SPORK_EXTRACTOR
 
         private string GetConnectionString(Server server)
         {
+            ACryptoServiceProvider crypt = new ACryptoServiceProvider();
             string connString = string.Empty;
 
-            if(server == Server.SAPHana)
+            if (server == Server.SAPHana)
+            {
                 connString = $"Server={hanaServer};Username={hanaUser};Password={hanaPassword};";
+            }
+
             else
-                connString = $"Server={sporkServer};Database={sporkDB};Username={sporkUser};Password={sporkPass};";
+            {
+                string decryptedSporkPassword = crypt.Decrypt(sporkPass, "*sup3r5dm1n*");
+                connString = $"Server={sporkServer};Database={sporkDB};Username={sporkUser};Password={decryptedSporkPassword};";
+            }
 
             return connString;
         }
